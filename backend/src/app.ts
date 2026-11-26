@@ -5,6 +5,7 @@ import helmet from "helmet";
 import authRoutes from "./modules/auth/auth.routes.js";
 import organizationRoutes from "./modules/organizations/organization.routes.js";
 import projectRoutes from "./modules/projects/project.routes.js";
+import taskRoutes from "./modules/tasks/task.routes.js";
 
 const app = express();
 
@@ -18,6 +19,10 @@ app.use(express.json({ limit: "1mb" }));
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/organizations", organizationRoutes);
 app.use("/api/v1/organizations/:organizationId/projects", projectRoutes);
+app.use(
+  "/api/v1/organizations/:organizationId/projects/:projectId/tasks",
+  taskRoutes,
+);
 
 app.get("/api/v1/health", async (_req, res) => {
   try {

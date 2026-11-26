@@ -7,6 +7,11 @@ datasource db {
   provider = "postgresql"
 }
 
+enum TeamRole {
+  LEAD
+  MEMBER
+}
+
 enum OrganizationRole {
   OWNER
   ADMIN
@@ -44,6 +49,8 @@ model User {
   isActive      Boolean  @default(true)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+  createdTeams       Team[]       @relation("TeamCreator")
+  teamMemberships   TeamMember[]
 
   ownedOrganizations Organization[] @relation("OrganizationOwner")
   memberships       Membership[]
@@ -67,6 +74,7 @@ model Organization {
   memberships Membership[]
   projects    Project[]
   tasks       Task[]
+  teams       Team[]
   comments    Comment[]
   activities  ActivityLog[]
 
@@ -182,4 +190,36 @@ model RefreshToken {
 
   @@index([userId])
   @@index([expiresAt])
+}
+
+model Team {
+  id             String   @id @default(cuid())
+  organizationId  String
+  name           String
+  description    String?
+  createdById   String
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  createdBy   User         @relation("TeamCreator", fields: [createdById], references: [id])
+  members     TeamMember[]
+
+  @@unique([organizationId, name])
+  @@index([organizationId])
+  @@index([createdById])
+}
+
+model TeamMember {
+  id        String   @id @default(cuid())
+  teamId    String
+  userId    String
+  role      TeamRole @default(MEMBER)
+  joinedAt  DateTime @default(now())
+
+  team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([teamId, userId])
+  @@index([userId])
 }

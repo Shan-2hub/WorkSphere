@@ -7,6 +7,7 @@ import organizationRoutes from "./modules/organizations/organization.routes.js";
 import projectRoutes from "./modules/projects/project.routes.js";
 import taskRoutes from "./modules/tasks/task.routes.js";
 import commentRoutes from "./modules/comments/comment.routes";
+import activityRoutes from "./modules/activity/activity.routes";
 
 const app = express();
 
@@ -27,6 +28,10 @@ app.use(
 app.use(
   "/api/v1/organizations/:organizationId/projects/:projectId/tasks/:taskId/comments",
   commentRoutes,
+);
+app.use(
+  "/api/v1/organizations/:organizationId/activity",
+  activityRoutes,
 );
 
 app.get("/api/v1/health", async (_req, res) => {

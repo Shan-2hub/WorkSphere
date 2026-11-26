@@ -9,6 +9,9 @@ import taskRoutes from "./modules/tasks/task.routes.js";
 import commentRoutes from "./modules/comments/comment.routes";
 import activityRoutes from "./modules/activity/activity.routes";
 import teamRoutes from "./modules/teams/team.routes";
+import invitationRoutes, {
+  acceptInvitationRouter,
+} from "./modules/invitations/invitation.routes.js";
 
 const app = express();
 
@@ -38,6 +41,12 @@ app.use(
   "/api/v1/organizations/:organizationId/teams",
   teamRoutes,
 );
+app.use(
+  "/api/v1/organizations/:organizationId/invitations",
+  invitationRoutes,
+);
+
+app.use("/api/v1/invitations", acceptInvitationRouter);
 
 app.get("/api/v1/health", async (_req, res) => {
   try {
